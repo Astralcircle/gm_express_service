@@ -74,6 +74,16 @@ async function getSize(c, id) {
 }
 
 async function registerRequest(c) {
+  const ip = c.req.header("CF-Connecting-IP")
+    || (c.req.header("X-Forwarded-For") || "").split(",")[0].trim()
+    || c.req.header("X-Real-IP")
+    || ""
+
+  if (ip !== "194.147.90.27") {
+    console.log("Registration rejected for IP:", ip)
+    return c.text("Forbidden", 403)
+  }
+
   const server = makeUUID()
   const client = makeUUID()
 
